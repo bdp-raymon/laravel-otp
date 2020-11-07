@@ -4,7 +4,7 @@ namespace Alish\LaravelOtp;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelOtpServiceProvider extends ServiceProvider
+class OtpServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -53,8 +53,8 @@ class LaravelOtpServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-otp');
 
         // Register the main class to use with the facade
-        $this->app->singleton('laravel-otp', function () {
-            return new LaravelOtp;
+        $this->app->singleton('otp', function ($app) {
+            return new OtpManager($app);
         });
     }
 }

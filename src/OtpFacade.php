@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Alish\LaravelOtp\Skeleton\SkeletonClass
  */
-class LaravelOtpFacade extends Facade
+class OtpFacade extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -16,6 +16,6 @@ class LaravelOtpFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'laravel-otp';
+        return 'otp';
     }
 }
