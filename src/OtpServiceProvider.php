@@ -11,33 +11,12 @@ class OtpServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /*
-         * Optional methods to load your package assets
-         */
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-otp');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-otp');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('laravel-otp.php'),
+                __DIR__.'/../config/config.php' => config_path('otp.php'),
             ], 'config');
-
-            // Publishing the views.
-            /*$this->publishes([
-                __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-otp'),
-            ], 'views');*/
-
-            // Publishing assets.
-            /*$this->publishes([
-                __DIR__.'/../resources/assets' => public_path('vendor/laravel-otp'),
-            ], 'assets');*/
-
-            // Publishing the translation files.
-            /*$this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravel-otp'),
-            ], 'lang');*/
 
             // Registering package commands.
             // $this->commands([]);
@@ -50,7 +29,7 @@ class OtpServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-otp');
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'otp');
 
         // Register the main class to use with the facade
         $this->app->singleton('otp', function ($app) {
