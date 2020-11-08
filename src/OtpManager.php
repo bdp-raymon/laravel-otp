@@ -18,7 +18,7 @@ class OtpManager extends Manager
         return new CacheDriver(
             $this->container->make('cache'),
             $this->container->make('hash'),
-            $this->config);
+            $this->config->get('otp'));
     }
 
     public function createDatabaseDriver()

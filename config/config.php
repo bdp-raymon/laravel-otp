@@ -12,5 +12,8 @@ return [
     'length' => 6,
 
     // expiry time of token is seconds start from generated time
-    'timeout' => 5 * 60
+    'timeout' => 5 * 60,
+
+    // hash stored token
+    'hash' => false
 ];
