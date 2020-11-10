@@ -34,7 +34,7 @@ class CacheDriverTest extends TestCase
 
     public function test_cache_driver_could_revoke_token()
     {
-        $this->cacheDriver->issue($key = 'test-key');
+        $this->cacheDriver()->issue($key = 'test-key');
 
         $status = $this->cacheDriver()->revoke($key);
 

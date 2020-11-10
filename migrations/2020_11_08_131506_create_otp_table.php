@@ -15,8 +15,8 @@ class CreateOtpTable extends Migration
     {
         Schema::create('otps', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->string('token');
+            $table->string('key')->index();
+            $table->string('token')->index();
             $table->timestamp('revoked_at')->nullable();
             $table->timestamp('used_at')->nullable();
             $table->timestamps();
@@ -30,6 +30,6 @@ class CreateOtpTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laravel_otp');
+        Schema::dropIfExists('otps');
     }
 }
