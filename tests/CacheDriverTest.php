@@ -29,4 +29,16 @@ class CacheDriverTest extends TestCase
         $this->assertEquals($token, $cachedToken);
     }
 
+    public function test_cacheDriver_revoke()
+    {
+        $cacheDriver = $this->app->make('otp')->driver('cache');
+        $token = $cacheDriver->issue($key = '09367892834');
+
+        $this->assertNotNull($token);
+        $forgotten = $cacheDriver->revoke($key = '09367892834');
+        $this->assertTrue($forgotten);
+        $cachedToken = Cache::get('laravel-otp-'.$key);
+        $this->assertNull($cachedToken);
+    }
+
 }
