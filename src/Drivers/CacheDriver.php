@@ -49,10 +49,14 @@ class CacheDriver implements Otp
 
     public function use(string $key, string $token): bool
     {
-        return $this->checkToken(
+        $result = $this->checkToken(
             $token,
             $this->cache->get($this->key($key))
         );
+
+        $this->revoke($key);
+
+        return $result;
     }
 
     protected function timeout(): int

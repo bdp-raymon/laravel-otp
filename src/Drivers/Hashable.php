@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 trait Hashable
 {
 
-    protected function checkToken(string $token, string $originalToken)
+    protected function checkToken(string $token, ?string $originalToken)
     {
         if ($this->shouldHash()) {
             return $this->hash->check($token, $originalToken);
