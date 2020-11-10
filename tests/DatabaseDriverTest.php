@@ -15,8 +15,6 @@ class DatabaseDriverTest extends TestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
-
         $this->artisan('migrate:fresh')->run();
     }
 
