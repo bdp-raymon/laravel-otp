@@ -16,7 +16,7 @@ class Otp extends Model
     {
         return $query
             ->where('key', $key)
-            ->whereNull('revoke_at')
+            ->whereNull('revoked_at')
             ->whereNull('used_at');
     }
 }

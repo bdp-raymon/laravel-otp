@@ -39,7 +39,7 @@ class DatabaseDriver implements Otp
     {
         return OtpModel::valid($key)
             ->update([
-                'revoke_at' => now()
+                'revoked_at' => now()
             ]) > 0;
     }
 
