@@ -45,10 +45,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "OtpServiceProvider"
+                "Alish\\LaravelOtp\\OtpServiceProvider"
             ],
             "aliases": {
-                "LaravelOtp": "OtpFacade"
+                "LaravelOtp": "Alish\\LaravelOtp\\OtpFacade"
             }
         }
     }
