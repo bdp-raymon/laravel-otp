@@ -14,6 +14,7 @@ class DatabaseDriverTest extends DriverTestCase
         parent::setUp();
 
         $this->artisan('migrate:fresh')->run();
+        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
     }
 
     public function test_database_driver_could_issue_token()
@@ -59,7 +60,7 @@ class DatabaseDriverTest extends DriverTestCase
         $this->assertFalse($this->checkToken($key, $token));
     }
 
-    public function test_multiple_active_cocurrent_token_possible()
+    public function test_multiple_active_concurrent_token_possible()
     {
         $token1 = $this->issueToken($key = 'test');
         $token2 = $this->issueToken($key);
