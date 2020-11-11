@@ -1,9 +1,9 @@
 # Very short description of the package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/alish/laravel-otp.svg?style=flat-square)](https://packagist.org/packages/alish/laravel-otp)
-[![Build Status](https://img.shields.io/travis/alish/laravel-otp/master.svg?style=flat-square)](https://travis-ci.org/alish/laravel-otp)
-[![Quality Score](https://img.shields.io/scrutinizer/g/alish/laravel-otp.svg?style=flat-square)](https://scrutinizer-ci.com/g/bdp-raymon/laravel-otp)
-[![Total Downloads](https://img.shields.io/packagist/dt/alish/laravel-otp.svg?style=flat-square)](https://packagist.org/packages/bdp-raymon/laravel-otp)
+[![Build Status](https://img.shields.io/travis/bdp-raymon/laravel-otp/master.svg?style=flat-square)](https://travis-ci.org/bdp-raymon/laravel-otp)
+[![Quality Score](https://img.shields.io/scrutinizer/g/bdp-raymon/laravel-otp.svg?style=flat-square)](https://scrutinizer-ci.com/g/bdp-raymon/laravel-otp)
+[![Total Downloads](https://img.shields.io/packagist/dt/alish/laravel-otp.svg?style=flat-square)](https://packagist.org/packages/alish/laravel-otp)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
