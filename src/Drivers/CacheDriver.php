@@ -5,12 +5,11 @@ namespace Alish\LaravelOtp\Drivers;
 use Alish\LaravelOtp\Contracts\Otp;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Support\Arr;
 
 
 class CacheDriver implements Otp
 {
-    use TokenGenerator, Hashable;
+    use HasConfig, TokenGenerator, TokenManipulator;
 
     protected string $namespace = 'laravel-otp';
 
@@ -29,43 +28,58 @@ class CacheDriver implements Otp
 
     public function issue(string $key): string
     {
-        $token = $this->generateToken();
-
-        $this->cache->set(
-            $this->key($key),
-            $this->hashToken($token),
-            $this->timeout()
-        );
+        $this->storeToken($key, $token = $this->generateToken());
 
         return $token;
     }
 
-
-
-    public function revoke(string $key): bool
+    protected function storeToken(string $key, string $token): bool
     {
-        return $this->cache->forget($this->key($key));
+        if (is_null($this->timeout())) {
+            return $this->cache->forever(
+                $this->key($key),
+                $this->storableToken($token)
+            );
+        }
+
+        return $this->cache->set(
+            $this->key($key),
+            $this->storableToken($token),
+            $this->timeout()
+        );
+    }
+
+    public function key(string $key): string
+    {
+        return $this->namespace . '-' . $key;
+    }
+
+    public function check(string $key, string $token): bool
+    {
+        return $this->compareTokens(
+            $token,
+            $this->cache->get($this->key($key))
+        );
     }
 
     public function use(string $key, string $token): bool
     {
-        $result = $this->checkToken(
-            $token,
-            $this->cache->get($this->key($key))
-        );
+        $result = $this->check($key, $token);
 
-        $this->revoke($key);
+        $this->forgetToken($key);
 
         return $result;
     }
 
-    protected function timeout(): int
+    public function forgetToken(string $key): bool
     {
-        return Arr::get($this->config, 'timeout', 5 * 60);
+        return $this->cache->forget($this->key($key));
     }
 
-    protected function key(string $key): string
+    public function revoke(string $key): bool
     {
-        return $this->namespace . '-' . $key;
+        return $this->forgetToken($key);
     }
+
+
 }

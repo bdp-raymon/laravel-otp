@@ -3,63 +3,43 @@
 
 namespace Alish\LaravelOtp\Tests;
 
-use Alish\LaravelOtp\Drivers\CacheDriver;
-use Alish\LaravelOtp\OtpServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Orchestra\Testbench\TestCase;
 
-class CacheDriverTest extends TestCase
+
+class CacheDriverTest extends DriverTestCase
 {
 
-    protected CacheDriver $cacheDriver;
-
-
-    protected function cacheDriver()
-    {
-        return $this->app->make('otp')->driver('cache');
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [OtpServiceProvider::class];
-    }
+    protected string $driver = 'cache';
 
     public function test_cache_driver_could_issue_token()
     {
-        $token = $this->cacheDriver()->issue('test-key');
-
+        $token = $this->issueToken($key = 'test-1');
         $this->assertNotNull($token);
+        $this->assertTrue($this->checkToken($key, $token));
+        $this->assertNotNull($this->issueToken('test-2'));
+        $this->assertNotNull($this->issueToken('test-3'));
+        $this->assertNotNull($this->issueToken('test-1'));
     }
 
     public function test_cache_driver_could_revoke_token()
     {
-        $this->cacheDriver()->issue($key = 'test-key');
-
-        $status = $this->cacheDriver()->revoke($key);
+        $token = $this->issueToken($key = 'test-key');
+        $status = $this->revokeToken($key);
 
         $this->assertTrue($status);
+        $this->assertFalse($this->checkToken($key, $token));
     }
 
-    public function test_revoked_token_cant_revoke_anymore()
+    public function test_generated_token_is_usable_once()
     {
-        $this->cacheDriver()->issue($key = 'test-key');
+        $token = $this->issueToken($key = 'test');
 
-        $this->cacheDriver()->revoke($key);
-        $status = $this->cacheDriver()->revoke($key);
-
-        $this->assertFalse($status);
-    }
-
-    public function test_generated_token_is_useable_once()
-    {
-        $token = $this->cacheDriver()->issue($key = 'test-key');
-
-        $result = $this->cacheDriver()->use($key, $token);
+        $result = $this->useToken($key, $token);
 
         $this->assertTrue($result);
 
-        $result = $this->cacheDriver()->use($key, $token);
+        $result = $this->useToken($key, $token);
 
         $this->assertFalse($result);
     }
@@ -68,11 +48,22 @@ class CacheDriverTest extends TestCase
     {
         $this->app->config->set('otp.hash', true);
 
-        $token = $this->cacheDriver()->issue($key = 'test-key');
+        $token = $this->issueToken($key = 'test');
 
-        $hashedToken = Cache::get('laravel-otp-'.$key);
+        $hashedToken = Cache::get($this->driver()->key($key));
 
         $this->assertTrue(Hash::check($token, $hashedToken));
+    }
+
+    public function test_token_will_expire_after_timeout()
+    {
+        $this->app->config->set('otp.timeout', $timeout = 60);
+
+        $token = $this->issueToken($key = 'test');
+
+        $this->travel($timeout + 1)->seconds();
+
+        $this->assertFalse($this->checkToken($key, $token));
     }
 
 }

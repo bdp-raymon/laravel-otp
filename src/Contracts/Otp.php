@@ -20,6 +20,14 @@ interface Otp
     public function revoke(string $key): bool;
 
     /**
+     * check if provided pair of (key, token) match any previous stored token with correspond key
+     * @param string $key
+     * @param string $token
+     * @return bool
+     */
+    public function check(string $key, string $token): bool;
+
+    /**
      * use token for provided key, if provided key exist, and usable return true, otherwise return false
      * @param string $key
      * @param string $token

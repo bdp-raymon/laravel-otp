@@ -19,6 +19,7 @@ class CreateOtpTable extends Migration
             $table->string('token')->index();
             $table->timestamp('revoked_at')->nullable();
             $table->timestamp('used_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

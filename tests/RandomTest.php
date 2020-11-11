@@ -25,4 +25,17 @@ class RandomTest extends TestCase
         $this->assertTrue(is_numeric($random->generate()));
     }
 
+    public function test_random_class_custom_set_generation()
+    {
+        $random = new Random();
+
+        $token = $random->custom($custom = "123456789")->generate();
+
+        $this->assertMatchesRegularExpression('/[1-9]/', $token);
+
+        $token = $random->custom($custom = "abcdefghijklmnopqrstuvwxyz")->generate();
+
+        $this->assertMatchesRegularExpression('/[a-z]/', $token);
+    }
+
 }

@@ -3,46 +3,33 @@
 
 namespace Alish\LaravelOtp\Drivers;
 
-
 use Alish\LaravelOtp\Util\Random;
-use Illuminate\Support\Arr;
 
 trait TokenGenerator
 {
+    protected ?Random $randomGenerator = null;
 
-    protected Random $random;
-
-    protected string $type = 'alphanumeric';
-
-    protected int $length = 6;
-
-    protected function random()
+    protected function randomGenerator()
     {
-        return $this->random ?? $this->random = new Random([
+        if (!is_null($this->randomGenerator)) {
+            return $this->randomGenerator;
+        }
+
+        $this->randomGenerator = new Random([
             'type' => $this->tokenType(),
             'length' => $this->tokenLength()
         ]);
-    }
 
-    protected function tokenType(): string
-    {
-        return $this->getConfig('type', 'alphanumeric');
-    }
+        if (!is_null($this->customSet())) {
+            $this->randomGenerator = $this->randomGenerator()->custom($this->customSet());
+        }
 
-    protected function tokenLength(): int
-    {
-        return $this->getConfig('length', 6);
-    }
-
-    protected function getConfig(string $key, $default)
-    {
-        return property_exists($this, 'config') ?
-            Arr::get($this->config, $key, $default) :
-            $default;
+        return $this->randomGenerator;
     }
 
     protected function generateToken(): string
     {
-        return $this->random()->generate();
+        return $this->randomGenerator()
+            ->generate();
     }
 }

@@ -4,14 +4,10 @@
 namespace Alish\LaravelOtp\Tests;
 
 
-use Alish\LaravelOtp\Drivers\DatabaseDriver;
-use Alish\LaravelOtp\Models\Otp;
-use Alish\LaravelOtp\OtpServiceProvider;
-use Illuminate\Support\Facades\Hash;
-use Orchestra\Testbench\TestCase;
-
-class DatabaseDriverTest extends TestCase
+class DatabaseDriverTest extends DriverTestCase
 {
+
+    protected string $driver = 'database';
 
     protected function setUp(): void
     {
@@ -20,60 +16,67 @@ class DatabaseDriverTest extends TestCase
         $this->artisan('migrate:fresh')->run();
     }
 
-    protected function getPackageProviders($app)
-    {
-        return [OtpServiceProvider::class];
-    }
-
-    protected function databaseDriver() : DatabaseDriver
-    {
-        return $this->app->make('otp')->driver('database');
-    }
-
     public function test_database_driver_could_issue_token()
     {
-        $token = $this->databaseDriver()->issue($key = 'test-key');
+        $token = $this->issueToken($key = 'test');
 
         $this->assertNotNull($token);
+        $this->assertTrue($this->checkToken($key, $token));
 
         $this->assertDatabaseHas('otps', ['key' => $key, 'token' => $token]);
     }
 
     public function test_database_driver_could_revoke_token()
     {
-        $this->databaseDriver()->issue($key = 'test-key');
-        $revoked = $this->databaseDriver()->revoke($key);
+        $token = $this->issueToken($key = 'test');
+        $revoked = $this->revokeToken($key);
 
         $this->assertTrue($revoked);
-
-        $this->assertDatabaseCount('otps', 1);
-        $otp = Otp::where('key', $key)->first();
-
-        $this->assertNotNull($otp->revoked_at);
+        $this->assertFalse($this->checkToken($key, $token));
     }
 
     public function test_database_driver_could_use_token_once()
     {
-        $token = $this->databaseDriver()->issue($key = 'test-key');
+        $token = $this->issueToken($key = 'test-key');
 
-        $result = $this->databaseDriver()->use($key, $token);
+        $result = $this->useToken($key, $token);
 
         $this->assertTrue($result);
 
-        $result = $this->databaseDriver()->use($key, $token);
+        $result = $this->useToken($key, $token);
 
         $this->assertFalse($result);
     }
 
-    public function test_database_driver_could_hash_token()
+    public function test_token_will_expire_after_timeout()
     {
-        $this->app->config->set('otp.hash', true);
-        $token = $this->databaseDriver()->issue($key = 'test-key');
+        $this->app->config->set('otp.timeout', $timeout = 60);
 
-        $this->assertDatabaseCount('otps', 1);
-        $otp = Otp::where('key', $key)->first();
+        $token = $this->issueToken($key = 'test');
 
-        $this->assertTrue(Hash::check($token, $otp->token));
+        $this->travel($timeout + 1)->seconds();
+
+        $this->assertFalse($this->checkToken($key, $token));
+    }
+
+    public function test_multiple_active_cocurrent_token_possible()
+    {
+        $token1 = $this->issueToken($key = 'test');
+        $token2 = $this->issueToken($key);
+
+        $this->assertTrue($this->checkToken($key, $token1));
+        $this->assertTrue($this->checkToken($key, $token2));
+    }
+
+    public function test_all_previous_valid_token_could_revoke()
+    {
+        $this->app->config->set('otp.unique', true);
+
+        $token1 = $this->issueToken($key = 'test');
+        $token2 = $this->issueToken($key);
+
+        $this->assertFalse($this->checkToken($key, $token1));
+        $this->assertTrue($this->checkToken($key, $token2));
     }
 
 }

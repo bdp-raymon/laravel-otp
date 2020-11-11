@@ -19,10 +19,20 @@ class Random
 
     protected string $alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+    protected string $specials = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
+
+    protected ?string $custom = null;
+
     public function __construct(array $config = [])
     {
         $this->type = Arr::get($config, 'type', $this->type);
         $this->length = Arr::get($config, 'length', $this->length);
+    }
+
+    public function custom(string $custom): self
+    {
+        $this->custom = $custom;
+        return $this;
     }
 
     public function type(string $type): self
@@ -50,12 +60,19 @@ class Random
 
     public function characters(): array
     {
+        if (!is_null($this->custom)) {
+            return str_split($this->custom);
+        }
+
         switch ($this->type) {
             case 'numeric':
                 $characters = $this->numerics;
                 break;
             case 'alpha':
                 $characters = $this->alpha;
+                break;
+            case 'strong':
+                $characters = $this->numerics . $this->alpha . $this->specials;
                 break;
             case 'alphanumeric':
             default:
