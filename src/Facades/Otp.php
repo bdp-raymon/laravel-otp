@@ -1,13 +1,10 @@
 <?php
 
-namespace Alish\LaravelOtp;
+namespace Alish\LaravelOtp\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \Alish\LaravelOtp\Skeleton\SkeletonClass
- */
-class OtpFacade extends Facade
+class Otp extends Facade
 {
     /**
      * Get the registered name of the component.
