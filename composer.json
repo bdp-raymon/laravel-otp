@@ -48,7 +48,7 @@
                 "Alish\\LaravelOtp\\OtpServiceProvider"
             ],
             "aliases": {
-                "LaravelOtp": "Alish\\LaravelOtp\\Facades\\Otp"
+                "Otp": "Alish\\LaravelOtp\\Facades\\Otp"
             }
         }
     }
