@@ -32,7 +32,7 @@ The whole functionality of the One-Time Password Authentication is provided thro
 Keep in mind that if database driver is your prefered choice, you are supposed to publish migrations file first:
 
 ```bash
-pa vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --tag=migrations
+php artisan vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --tag=migrations
 ```
 
 then run your migrations with
@@ -40,6 +40,29 @@ then run your migrations with
 ```bash
 php artisan migrate
 ```
+
+In order to be able to adjust the configuration of this package, you are supposed to publish your configurations using the following command:
+
+```bash
+php artisan vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --tag=config
+```
+
+* default: Using this value, you are able to modify the default method to store the OTP and other related information.
+
+* type: This variable determines the type of the characters included in the OTP. Choices are alpha, alphanumeric, and numeric.
+
+* length: By changing this variable, you are able to determine the number of the characters that OTP has.
+
+
+* case-sensitive: Using this variable, you are able to control the sensetivity of the package to case sentivity.
+
+* custom': Pass the set of the characters you want to create your custom OTPs from as a simple string (eg: "1234") to this variable.
+
+* timeout: This variable determines the time (in seconds), which the token is active to use. To set a token active permenantly, set timeout to null.
+
+* hash: Using this variable, you are able to determine if the token should be hashed or not.
+
+* unique: Using this variable, you are able to revoke all generated tokens after creating a new one, for an specific key. This functionality is only available for Database Driver.
 
 ### Testing
 
