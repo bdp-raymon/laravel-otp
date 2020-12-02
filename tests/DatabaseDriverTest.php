@@ -80,4 +80,15 @@ class DatabaseDriverTest extends DriverTestCase
         $this->assertTrue($this->checkToken($key, $token2));
     }
 
+    public function test_wrong_input_couldnt_revoke_token()
+    {
+        $token = $this->issueToken($key = 'test-key');
+
+        $wrong_token = 'aaa';
+
+        $this->assertFalse($this->useToken($key, $wrong_token));
+
+        $this->assertTrue($this->checkToken($key, $token));
+    }
+
 }
