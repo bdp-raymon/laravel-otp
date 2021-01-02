@@ -66,7 +66,9 @@ class CacheDriver implements Otp
     {
         $result = $this->check($key, $token);
 
-        $this->forgetToken($key);
+        if ($result) {
+            $this->forgetToken($key);
+        }
 
         return $result;
     }
