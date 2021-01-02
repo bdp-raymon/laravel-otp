@@ -5,7 +5,7 @@ return [
     // supported: cache, database
     'default' => env('OTP_DRIVER', 'cache'),
 
-    // type of generated token, supported types: alpha, alphanumeric, numeric
+    // type of generated token, supported types: alpha, alphanumeric, numeric, strong
     'type' => 'alphanumeric',
 
     // length of generated token
@@ -25,6 +25,6 @@ return [
 
     // revoke all generated tokens after creating new one for specific key
     // only for database driver
-    // setting this to true, revoke all valid tokens when you issuing new token for provided key
+    // setting this to true, will revoke all valid tokens when you issuing new token for provided key
     'unique' => false
 ];

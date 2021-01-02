@@ -17,19 +17,26 @@ composer require alish/laravel-otp
 
 ## Usage
 
-The first step to take in order to use this package, is finding the storage method that suits your needs best. This module is compatible with both Cache and Database.
+for issuing new token for specific key:
+```php
+$token = Otp::issue($key = "string");
+```
 
-The whole functionality of the One-Time Password Authentication is provided through the methods provided in the __Otp__ interface, available in the __Contracts__ folder of the __src__ folder. The referenced interface, includes following methods:
+to revoke token for specific key you can use:
+```php
+$bool = Otp::revoke($key = 'string'); // return true if a valid provided key revoked
+```
 
-* issue: This method is responsible to both creation and storage of the OTP in the chosen mean of storage.
+to check token against key:
+```php
+$bool = Otp::check($key = 'string', $token = 'already issued token'); // if key and token match return true
+```
+if you want to use otp generated token (it means check provided key, token then revoke if it matches) you can:
+```php
+$bool = Otp::use($key = 'string', $token = 'already issued token'); // return true if provided key, token match
+```
 
-* revoke: This method is used to deactivate a token. Besides using the token, its expiration results in the deactivation of the token.
-
-* check: Using this method, we are able to validate a pair of __Key__ and __Token__.
-
-* use: This method is used to provide a pair of __Key__ and __Token__ to authenticate.
-
-Keep in mind that if database driver is your prefered choice, you are supposed to publish migrations file first:
+Keep in mind that if database driver is your preferred choice, you are supposed to publish migrations file first:
 
 ```bash
 php artisan vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --tag=migrations
@@ -49,12 +56,12 @@ php artisan vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --ta
 
 * default: Using this value, you are able to modify the default method to store the OTP and other related information.
 
-* type: This variable determines the type of the characters included in the OTP. Choices are alpha, alphanumeric, and numeric.
+* type: This variable determines the type of the characters included in the OTP. Choices are alpha, alphanumeric, numeric and strong (include special characters).
 
 * length: By changing this variable, you are able to determine the number of the characters that OTP has.
 
 
-* case-sensitive: Using this variable, you are able to control the sensetivity of the package to case sentivity.
+* case-sensitive: Using this variable, you are able to control the sensitivity of the package to case sensitivity.
 
 * custom': Pass the set of the characters you want to create your custom OTPs from as a simple string (eg: "1234") to this variable.
 
@@ -62,7 +69,7 @@ php artisan vendor:publish --provider="Alish\LaravelOtp\OtpServiceProvider" --ta
 
 * hash: Using this variable, you are able to determine if the token should be hashed or not.
 
-* unique: Using this variable, you are able to revoke all generated tokens after creating a new one, for an specific key. This functionality is only available for Database Driver.
+* unique: Using this variable, you are able to revoke all generated tokens after creating a new one, for a specific key. This functionality is only available for Database Driver.
 
 ### Testing
 
